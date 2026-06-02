@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Семантический поиск</title>
+    <link rel="icon" href="/front/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/front/styles/sweetalert.css">
+    <link rel="stylesheet" href="/front/styles/icons.css">
+    <link rel="stylesheet" href="/front/styles/main.css">
+</head>
+
+<body>
+    <!-- Header with health indicator and quick search -->
+    <header class="header">
+        <span class="icon-wrapper header-menu" onclick="collapseSidebar(event)" desc="wrapper menu">
+            <svg class="icon menu-line-container" viewBox="0 0 24 24" xmlns="w3.org" desc="menu">
+                <path class="menu-line-top" d="M5 7H19" desc="menu top"/>
+                <path class="menu-line-middle" d="M5 11H19" desc="menu middle"/>
+                <path class="menu-line-bottom" d="M5 15H19" desc="menu bottom"/>
+            </svg>
+        </span>
+        <div class="separator"></div>
+        <div class="health-indicator" id="healthIndicator">
+            <span class="status-dot"></span>
+            <span class="status-text">Проверка</span>
+        </div>
+        <div class="separator"></div>
+        <div class="quick-search">
+            <input type="search" id="quickSearchInput" placeholder="Введите вопрос" />
+            <div class="quick-search-controls">
+                <input type="number" id="quickSearchLimit" value="10" min="1" max="100" title="Лимит результатов" />
+                <input type="number" id="quickSearchThreshold" value="0.7" min="0.0" max="1.0" step="0.01" title="Трешхолд схожести" />
+                <button class="btn btn-primary" id="quickSearchBtn">Найти</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Left navigation sidebar -->
+        <nav class="sidebar open">
+            <ul class="nav-menu">
+                <li class="nav-section">Поиск</li>
+                <li><a href="#" data-page="search" class="nav-link active">
+                    <span class="icon-wrapper" desc="wrapper magnifying glass">
+                        <svg class="icon magnifying-glass-container" viewBox="0 0 24 24" xmlns="w3.org" desc="magnifying glass">
+                            <path d="M14 12.5A5 5 0 004 5.5 1 1 0 0014 12.5" desc="magnifying glass lense"/>
+                            <path class="magnifying-glass-handle" d="M14 12.5 20.5 18.5C22 20 20.5 21.5 19 20 L12.5 14" desc="magnifying glass handle"/>
+                            <path class="magnifying-glass-zoom" d="M9 9A5 5 0 009 9 1 1 0 009 9" desc="magnifying glass zoom"></path>
+                        </svg>
+                    </span>
+                    <p>Поиск</p>
+                </a></li>
+
+                <li class="nav-section">Добавление данных</li>
+                <li><a href="#" data-page="reindex" class="nav-link">
+                    <span class="icon-wrapper" desc="wrapper hand">
+                        <svg class="icon hand-container" viewBox="0 0 24 24" xmlns="w3.org" desc="hand">
+                            <path class="hand-rotate" d="M14 6V12 6C14 5 14 4 15.5 4 17 4 17 5 17 6V13 9C17 8 17 7 18.5 7 20 7 20 8 20 9V15C20 18 17 21 14 21 10.5 21 9.5 20 8.5 19L4.75 15.25C3.75 14.25 2.75 13.25 3.875 12.125 5 11 6 12 7 13L9.5 15.5 8 14V7C8 6 8 5 9.5 5 11 5 11 6 11 7V12.5 5C11 4 11 3 12.5 3 14 3 14 4 14 5Z" desc="hand body"/>
+                        </svg>
+                    </span>
+                    <p>Ручная индексация</p>
+                </a></li>
+                <li><a href="#" data-page="reindex-file" class="nav-link">
+                    <span class="icon-wrapper" desc="wrapper file">
+                        <svg class="icon file-container" viewBox="0 0 24 24" xmlns="w3.org" desc="file">
+                            <path d="M11 3H8C7 3 6 4 6 5V19C6 20 7 21 8 21H16C17 21 18 20 18 19V10" desc="file body"/>
+                            <path class="file-bend" d="M11 3 18 10" desc="file fold"/>
+                            <path class="file-corner" d="M18 10 13 10C12 10 11 9 11 8L11 3" desc="file corner"/>
+                        </svg>
+                    </span>
+                    <p>Загрузка файла</p>
+                </a></li>
+
+                <li class="nav-section">Управление данными</li>
+                <li><a href="#" data-page="versions" class="nav-link">
+                    <span class="icon-wrapper" desc="wrapper versions">
+                        <svg class="icon versions-container" viewBox="0 0 24 24" xmlns="w3.org" desc="versions">
+                            <path d="M7 21A1 1 0 007 16 1 1 0 007 21Z" desc="versions left bottom node"/>
+                            <path d="M7 8A1 1 0 007 3 1 1 0 007 8Z" desc="versions left top node"/>
+                            <path d="M7 16V8" desc="versions verical line"/>
+                            <path class="versions-node" d="M17 10A1 1 0 0017 5 1 1 0 0017 10Z" desc="versions right node"/>
+                            <path class="versions-branch" d="M7 15C7 11 17 15 17 11V10" desc="versions branch line"/>
+                            <path class="versions-branch-shadow" d="M7 15C7 11 17 15 17 11V10" desc="versions branch line shadow"/>
+                        </svg>
+                    </span>
+                    <p>Версии</p>
+                </a></li>
+                <li><a href="#" data-page="database" class="nav-link">
+                    <span class="icon-wrapper" desc="wrapper database">
+                        <svg class="icon database-container" viewBox="0 0 24 24" xmlns="w3.org" desc="database">
+                            <path class="data-top" d="M20 7C20 9.20914 16.4183 11 12 11C7.58172 11 4 9.20914 4 7C4 4.79086 7.58172 3 12 3C16.4183 3 20 4.79086 20 7Z" desc="database top"/>
+                            <path class="data-middle" d="M20 7V12C20 14.2091 16.4183 16 12 16C7.58172 16 4 14.2091 4 12V7" desc="database middle"/>
+                            <path class="data-bottom" d="M4 12V17C4 19.2091 7.58172 21 12 21C16.4183 21 20 19.2091 20 17V12" desc="database bottom"/>
+                        </svg>
+                    </span>
+                    <p>База знаний</p>
+                </a></li>
+
+                <li><a href="#" data-page="queue" class="nav-link">
+                    <span class="icon-wrapper" desc="wrapper tasks">
+                        <svg class="icon tasks-container" viewBox="0 0 24 24" xmlns="w3.org" desc="tasks">
+                            <path d="M3 6V18C3 19 4 20 5 20H19C20 20 21 19 21 18V6C21 5 20 4 19 4H5C4 4 3 5 3 6" desc="tasks body"/>
+                            <path class="tasks-bullet-top" d="M7 10A1 1 0 017 8 1 1 0 017 10" desc="tasks top bullet"/>
+                            <path class="tasks-line-top" d="M11 9H18" desc="tasks top line"/>
+                            <path class="tasks-bullet-bottom-dot" d="M7 16A1 1 0 017 14 1 1 0 017 16" desc="tasks bottom bullet dot"/>
+                            <path class="tasks-bullet-bottom-cross" d="M7 15 7 15M7 15 7 15" desc="tasks bottom bullet cross"/>
+                            <path class="tasks-line-bottom-top" d="M11 13.5H18" desc="tasks bottom line 1"/>
+                            <path class="tasks-line-bottom-bottom" d="M11 16.5H18" desc="tasks bottom line 2"/>
+                        </svg>
+                    </span>
+                    <p>Задачи и очередь</p>
+                </a></li>
+
+                <li class="nav-section">Настройки</li>
+                <li><a href="#" data-page="stop-words" class="nav-link">
+                    <span class="icon-wrapper" desc="wrapper banned">
+                        <svg class="icon banned-container" viewBox="0 0 24 24" xmlns="w3.org" desc="banned">
+                            <path d="M18 19A5 5 0 006 5 1 1 0 0018 19" desc="banned body"/>
+                            <path d="M6 5 19 18" desc="banned line top"/>
+                            <path d="M5 6 18 19" desc="banned line bottom"/>
+                        </svg>
+                    </span>
+                    <p>Стоп-слова</p>
+                </a></li>
+                <li><a href="#" data-page="llm" class="nav-link">
+                    <span class="icon-wrapper" desc="wrapper llm">
+                        <svg class="icon llm-container" viewBox="0 0 24 24" xmlns="http://w3.org" desc="llm">
+                            <path class="llm-node-left-top" d="M5 10A1 1 0 016 5 1 1 0 015 10" desc="llm left top node"></path>
+                            <path class="llm-node-left-bottom" d="M5 19A1 1 0 016 14 1 1 0 015 19" desc="llm left bottom node"></path>
+                            <path class="llm-line llm-line-lt-rt" d="M8.5 7 15.5 6" desc="llm line left top to right top"></path>
+                            <path class="llm-line llm-line-lt-rm" d="M8 9 15.5 11.5" desc="llm line left top to right middle"></path>
+                            <path class="llm-line llm-line-lt-rb" d="M7.5 9.5 16.5 16.5" desc="llm line left top to right bottom"></path>
+                            <path class="llm-line llm-line-lb-rt" d="M7.5 14.5 16.5 7.6" desc="llm line left bottom to right top"></path>
+                            <path class="llm-line llm-line-lb-rm" d="M8 15 15.5 12.5" desc="llm line left bottom to right middle"></path>
+                            <path class="llm-line llm-line-lb-rb" d="M8.5 17 15.5 18" desc="llm line left bottom to right bottom"></path>
+                            <path class="llm-node-right-top" d="M18 8A1 1 0 0119 3 1 1 0 0118 8" desc="llm right top node"></path>
+                            <path class="llm-node-right-middle" d="M18 14.5A1 1 0 0119 9.5 1 1 0 0118 14.5" desc="llm right middle node"></path>
+                            <path class="llm-node-right-bottom" d="M18 21A1 1 0 0119 16 1 1 0 0118 21" desc="llm right bottom node"></path>
+                        </svg>
+                    </span>
+                    <p>Настройки LLM</p>
+                </a></li>
+            </ul>
+        </nav>
+
+        <!-- Main content area -->
+        <main class="content">
+            <!-- Search Page -->
+            <section id="page-search" class="page active">
+                <h1>Поиск семантически похожих вопросов</h1>
+                <div class="search-form">
+                    <div class="search-container search-request">
+                        <textarea id="searchQuery" rows="3" placeholder="Введите вопрос"></textarea>
+                        <div class="search-controls">
+                            <div class="search-controls-param">
+                                <label for="searchLimit">Лимит результатов:</label>
+                                <input type="number" id="searchLimit" value="10" min="1" max="100"
+                                    title="Максимальное количество статей в ответе" />
+                            </div>
+                            <div class="search-controls-param">
+                                <label for="searchThreshold">Порог схожести:</label>
+                                <input type="number" id="searchThreshold" value="0.7" min="0.0" max="1.0" step="0.01"
+                                    title="Порог схожести ответов на вопрос" />
+                            </div>
+                            <button class="btn btn-primary" id="searchBtn">Найти</button>
+                        </div>
+                    </div>
+                    <div class="search-container" id="searchResults" hidden>
+                        <div class="result-meta"></div>
+                        <div class="result-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Index Page (manual) -->
+            <section id="page-reindex" class="page">
+                <h1>Ручная индексация данных</h1>
+                <div class="form-container">
+                    <p>Введите данные в формате <span
+                        class="clickable-text" id="tooltipJsonTxt" onclick="downloadTxtTemplate(event)">JSON<span 
+                            class="tooltip-box"></span></span>:
+                    </p>
+                    <div class="form-container-data">
+                        <div class="form-container-data-text">
+                            <textarea id="reindexData" rows="11"></textarea>
+                        </div>
+                        <div class="form-controls-reindex">
+                            <div class="form-controls-params">
+                                <label>
+                                    <input type="checkbox" id="reindexMode" /> Добавить к активной версии
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="reindexActivate" /> Сделать версию активной
+                                </label>
+                                <label title="Закрепленную версию невозможно удалить">
+                                    <input type="checkbox" id="reindexPin" title="Закрепленную версию невозможно удалить" /> Закрепить версию
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="reindexLlm" /> Дозапросить синонимы у LLM
+                                </label>
+                            </div>
+                            <button class="btn btn-primary" id="reindexBtn">Индексировать</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Index File Page -->
+            <section id="page-reindex-file" class="page">
+                <h1>Загрузка файлов для индексации</h1>
+                <div class="form-container">
+                    <div class="form-container-data">
+                        <div class="form-container-data-text">
+                            <p>
+                                Поддерживаемые форматы:
+                                <span id="tooltipJson" class="clickable-text tooltip-trigger" onclick="downloadJsonTemplate(event)">.json
+                                    <span class="tooltip-box"></span>
+                                </span>,
+                                <span id="tooltipXlsx" class="clickable-text tooltip-trigger" onclick="downloadXlsxTemplate(event)">.xlsx
+                                    <span class="tooltip-box"><strong>Excel-документ должен содержать столбцы "id" и "samples"</strong><br>Столбец "title" является необязательным<br>В столбце "samples" может быть как список примеров вопросов (массив строк), так и просто пример вопроса (единичное значение)</span>
+                                </span>,
+                                <span id="tooltipTxt" class="clickable-text tooltip-trigger" onclick="downloadTxtTemplate(event)">.txt
+                                    <span class="tooltip-box"></span>
+                                </span>
+                            </p>
+                            <label class="input-file-label">
+                                <input type="file" class="file-upload" id="fileInput" accept=".json,.xlsx,.txt" multiple />
+                                <span>Выберите файл(-ы)</span>
+                            </label>
+                            <div class="input-file-list" id="fileInputList"></div>  
+                        </div>
+                        <div class="form-controls-reindex">
+                            <div class="form-controls-params">
+                                <label>
+                                    <input type="checkbox" id="fileIndexMode" /> Добавить к активной версии
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="fileIndexActivate" /> Сделать версию активной
+                                </label>
+                                <label title="Закрепленную версию невозможно удалить">
+                                    <input type="checkbox" id="fileIndexPin" title="Закрепленную версию невозможно удалить" /> Закрепить версию
+                                </label>
+                                <label>
+                                    <input type="checkbox" id="fileIndexLlm" /> Дозапросить синонимы у LLM
+                                </label>
+                            </div>
+                            <button class="btn btn-primary" id="fileIndexBtn">Индексировать</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Versions Page -->
+            <section id="page-versions" class="page">
+                <h1>Версии обучения</h1>
+                <div class="form-controls">
+                    <button class="btn btn-primary" id="refreshVersionsBtn">Обновить</button>
+                </div>
+                <div class="note-container dir-vt">
+                    <span>Всего версий: <p id="versionsNoteTotal"></p></span>
+                    <span>Закрепленных: <p id="versionsNotePin"></p></span>
+                </div>
+                <div id="versionsList" class="versions-list"></div>
+            </section>
+
+            <!-- Articles Page -->
+            <section id="page-articles" class="page">
+                <h1 class="version-info" id="pageArticlesHeader">Версия <p>
+                    <strong class="version-info-name-strong" id="pageArticlesHeaderVersionName"></strong>
+                    <span class="version-info-rename" id="pageArticlesHeaderVersionRename" title="Переименовать"></span>
+                </p></h1>
+                <div class="form-controls">
+                    <button class="btn btn-secondary" id="backToVersionsBtn">Назад к версиям</button>
+                    <button class="btn btn-primary" id="updateArticlesPageBtn">Обновить</button>
+                </div>
+                <div id="versionDetail" class="version-detail"></div>
+                <div class="note-container dir-hz">
+                    <span>Статьи:</span>
+                    <span><select id="articlesNoteSort" hidden>
+                        <option value="original">Оригинальная сортировка</option>
+                        <option value="id-desc">По id статьи &darr;</option>
+                        <option value="id-asc">По id статьи &uarr;</option>
+                        <option value="title-desc">По названию &darr;</option>
+                        <option value="title-asc">По названию &uarr;</option>
+                    </select></span>
+                </div>
+                <div id="articlesList" class="articles-list"></div>
+            </section>
+
+            <!-- Article Detail Page -->
+            <section id="page-article-detail" class="page">
+                <h1 class="page-article-detail-header">
+                    <strong id="articleDetailTitle"></strong>
+                    <p class="clickable-text" id="articleDetailId" onclick="copyToClipboard(this, event)"></p>
+                </h1>
+                <div class="form-controls">
+                    <button class="btn btn-secondary" id="backToArticlesBtn">Назад к статьям</button>
+                    <button class="btn btn-primary" id="updateArticlePageBtn">Обновить</button>
+                    <button class="btn btn-primary" id="saveAddedSamplesBtn" hidden>Сохранить</button>
+                </div>
+                <div class="note-container dir-vt">
+                    <span><em id="articleDetailNote" hidden>Не забывайте сохранять изменения</em></span>
+                </div>
+                <div id="articleDetailSamples" class="article-intents-section accordion"></div>
+                <div id="articleDetailSynonyms" class="article-intents-section accordion"></div>
+            </section>
+
+            <!-- Database Page -->
+            <section id="page-database" class="page">
+                <h1>База знаний статей</h1>
+                <div class="form-controls">
+                    <button class="btn btn-secondary" id="getDatabaseBtn">Обновить</button>
+                    <button class="btn btn-primary" id="saveDatabaseBtn">Сохранить</button>
+                </div>
+                <div id="databaseContainer" class="database-container"><h1>Функционал не реализован</h1></div>
+            </section>
+
+            <!-- Queue Page -->
+            <section id="page-queue" class="page">
+                <h1>Задачи</h1>
+                <div class="form-controls">
+                    <button class="btn btn-primary" id="refreshTasksBtn">Обновить</button>
+                </div>
+                <div class="tasks-data-section accordion" id="activeTasks"></div>
+                <div class="tasks-data-section accordion" id="queuedTasks"></div>
+                <div class="tasks-data-section accordion" id="failedTasks"></div>
+                <div class="tasks-data-section accordion" id="doneTasks"></div>
+            </section>
+
+            <!-- Task Detail Page -->
+            <section id="page-task-detail" class="page">
+                <h1>Задача <span id="taskDetailId"></span></h1>
+                <div class="form-controls">
+                    <button class="btn btn-secondary" id="backToQueueBtn">Назад</button>
+                </div>
+                <div id="taskDetail" class="task-detail"></div>
+            </section>
+
+            <!-- Stop-words Page -->
+            <section id="page-stop-words" class="page">
+                <h1>Стоп-слова</h1>
+                <div class="form-controls">
+                    <button class="btn btn-secondary" id="getStopWordsBtn">Обновить</button>
+                    <button class="btn btn-primary" id="saveStopWordsBtn">Сохранить</button>
+                </div>
+                <div class="note-container dir-vt">
+                    <span>Всего стоп-слов: <p id="stopWordsNoteTotal"></p></span>
+                    <span><em>Не забывайте сохранять изменения</em></span>
+                </div>
+                <div id="stopWordsList" class="stop-words-list"></div>
+            </section>
+
+            <!-- LLM Page -->
+            <section id="page-llm" class="page">
+                <h1>Настройки LLM</h1>
+                <div class="form-controls">
+                    <button class="btn btn-secondary" id="loadLlmConfigBtn">Обновить</button>
+                    <button class="btn btn-primary" id="saveLlmConfigBtn">Сохранить</button>
+                </div>
+                <div class="note-container">
+                    <span><em>Не забывайте сохранять изменения</em></span>
+                </div>
+                <div class="llm-config-section accordion" section="parameters">
+                    <div class="llm-config-section-header accordion-header">
+                        <h3>Параметры генерации</h3>
+                        <div class="section-header-controls"></div>
+                    </div>
+                    <div class="llm-config-section-content accordion-content" id="llmSectionGeneration">
+                        <div class="llm-controls-param">
+                            <label for="llmTemperature">Temperature:</label>
+                            <input type="number" id="llmTemperature" min="0.0" max="2.0" step="0.01" value="0.4" />
+                        </div>
+                        <div class="llm-controls-param">
+                            <label for="llmTopP">Top P:</label>
+                            <input type="number" id="llmTopP" min="0.0" max="1.0" step="0.01" value="0.7" />
+                        </div>
+                        <div class="llm-controls-param">
+                            <label for="llmRepeatPenalty">Repeat Penalty:</label>
+                            <input type="number" id="llmRepeatPenalty" min="0.0" max="2.0" step="0.01" value="1.1" />
+                        </div>
+                        <div class="llm-controls-param">
+                            <label for="llmFrequencyPenalty">Frequency Penalty:</label>
+                            <input type="number" id="llmFrequencyPenalty" min="-2.0" max="2.0" step="0.01" value="0.2" />
+                        </div>
+                        <div class="llm-controls-param">
+                            <label for="llmPresencePenalty">Presence Penalty:</label>
+                            <input type="number" id="llmPresencePenalty" min="-2.0" max="2.0" step="0.01" value="0.1" />
+                        </div>
+                    </div>
+                </div>
+                <div class="llm-config-section accordion" section="prompt">
+                    <div class="llm-config-section-header accordion-header">
+                        <h3>Промпт</h3>
+                        <div class="section-header-controls"></div>
+                    </div>
+                    <div class="llm-config-section-content accordion-content" id="llmSectionPrompt">
+                        <div class="form-container-data-text">
+                            <div class="llm-prompt-wrapper">
+                                <textarea id="llmPrompt" rows="15" placeholder="Системный промпт для генерации синонимов. Используйте {question} как плейсхолдер для вопроса"></textarea>
+                                <div class="help-text">{question} - плейсхолдер, который будет заменён на вопрос пользователя</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="llm-config-section accordion" section="connection">
+                    <div class="llm-config-section-header accordion-header">
+                        <h3>Подключение</h3>
+                        <div class="section-header-controls"></div>
+                    </div>
+                    <div class="llm-config-section-content accordion-content" id="llmSectionConnection">
+                        <div class="llm-controls-param">
+                            <label for="llmUrl">URL LLM:</label>
+                            <input type="text" id="llmUrl" placeholder="https://api.openai.com/v1" />
+                        </div>
+                        <div class="llm-controls-param">
+                            <label for="llmModel">Модель:</label>
+                            <input type="text" id="llmModel" placeholder="gpt-3.5-turbo" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/front/xlsx.js"></script>
+    <script src="/front/sweetalert.js"></script>
+    <script src="/front/app.js"></script>
+</body>
+
+</html>
