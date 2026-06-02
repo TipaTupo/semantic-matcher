@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  semantic-matcher:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: semantic-matcher:latest
+    container_name: semantic-matcher
+    restart: unless-stopped
+    ports:
+      - "$8123:8123"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      # General
+      - DATA_DIR=${DATA_DIR}
+      - MODEL_NAME=${MODEL_NAME}
+      # Params
+      - DEFAULT_LIMIT=${DEFAULT_LIMIT}
+      - SIMILARITY_THRESHOLD=${SIMILARITY_THRESHOLD}
+      - SYNONYM_VALIDATION_THRESHOLD=${SYNONYM_VALIDATION_THRESHOLD}
+      - BATCH_SIZE=${BATCH_SIZE}
+      - MAX_QUEUE_SIZE=${MAX_QUEUE_SIZE}
+      - STALE_LOCK_TIMEOUT_MINUTES=${STALE_LOCK_TIMEOUT_MINUTES}
+      - MAX_VERSIONS=${MAX_VERSIONS}
+      # LLM params
+      - LLM_URL=${LLM_URL}
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_AUTH_TOKEN=${LLM_AUTH_TOKEN}
+      - LLM_MODEL=${LLM_MODEL}
+      - LLM_TEMPERATURE=${LLM_TEMPERATURE}
+      - LLM_TOP_P=${LLM_TOP_P}
+      - LLM_FREQUENCY_PENALTY=${LLM_FREQUENCY_PENALTY}
+      - LLM_REPEAT_PENALTY=${LLM_REPEAT_PENALTY}
+      - LLM_PRESENCE_PENALTY=${LLM_PRESENCE_PENALTY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8123/health"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - semantic-matcher-data:/app/data
+
+volumes:
+  semantic-matcher-data:
+    name: semantic-matcher
