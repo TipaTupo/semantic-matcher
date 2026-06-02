@@ -1,0 +1,622 @@
+/* ==================== CSS Variables ==================== */
+:root {
+    --icon-input-cross: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 4C19 2 22 5 20 7L16 11C15 12 15 12 16 13L20 17C22 19 19 22 17 20L13 16C12 15 12 15 11 16L7 20C5 22 2 19 4 17L8 13C9 12 9 12 8 11L4 7C2 5 5 2 7 4L11 8C12 9 12 9 13 8L17 4Z'/%3E%3C/svg%3E");
+    --icon-input-cross-hover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 4C19 2 22 5 20 7L16 11C15 12 15 12 16 13L20 17C22 19 19 22 17 20L13 16C12 15 12 15 11 16L7 20C5 22 2 19 4 17L8 13C9 12 9 12 8 11L4 7C2 5 5 2 7 4L11 8C12 9 12 9 13 8L17 4Z'/%3E%3C/svg%3E");
+}
+
+/* ==================== Icons General ==================== */
+.icon-wrapper {
+    height: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.icon {
+    cursor: pointer;
+    height: 80%;
+    width: auto;
+    fill: none;
+    stroke: var(--primary-color);
+    stroke-width: var(--width-m);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: height var(--transition-slow);
+}
+
+.icon-wrapper:hover .icon {
+    stroke: var(--primary-hover);
+}
+
+/* ==================== Sidebar ==================== */
+.nav-link .icon-wrapper {
+    height: 32px;
+}
+
+.nav-link .icon {
+    background-color: var(--card-background);
+    transition: background-color var(--transition-normal), height var(--transition-slow);;
+}
+
+.nav-link:hover .icon {
+    background-color: var(--background-color);
+}
+
+.nav-link.active .icon {
+    background-color: var(--primary-color);
+    stroke: var(--text-invert);
+}
+
+/* ==================== Magnifying Glass ==================== */
+.icon-wrapper .magnifying-glass-handle,
+.icon-wrapper .magnifying-glass-zoom {
+    transform-origin: 9px 9px;
+    transition: transform var(--transition-slow);
+}
+
+.nav-link:hover .icon-wrapper .magnifying-glass-handle {
+    transform: rotate(10deg);
+}
+
+.icon-wrapper .magnifying-glass-zoom {
+    stroke-width: 0;
+}
+
+.nav-link:hover .icon-wrapper .magnifying-glass-zoom {
+    stroke-width: var(--width-s);
+    transform: scale(550%);
+}
+
+.nav-link .icon-wrapper .magnifying-glass-handle {
+    fill: var(--primary-color);
+}
+
+.icon-wrapper:hover .icon .magnifying-glass-handle {
+    fill: var(--primary-hover);
+}
+
+.nav-link.active .icon-wrapper .magnifying-glass-handle {
+    fill: var(--text-invert);
+}
+
+/* ==================== Hand ==================== */
+.icon-wrapper .hand-container .hand-rotate {
+    transform-origin: 12px 12px;
+    transition: transform var(--transition-slow);
+}
+
+.nav-link:hover .icon-wrapper .hand-rotate {
+    transform: rotate(-30deg) translateX(-1px);
+}
+
+/* ==================== File ==================== */
+.icon-wrapper .file-container .file-bend {
+    transition: opacity var(--transition-slow);
+}
+
+.nav-link:hover .icon-wrapper  .file-bend {
+    opacity: 0;
+}
+
+.icon-wrapper .file-container .file-corner {
+    transition: d var(--transition-slow);
+}
+
+.nav-link:hover .icon-wrapper .file-corner {
+    d: path("M18 10 18 5C18 4 17 3 16 3L11 3");
+}
+
+/* ==================== Versions ==================== */
+.icon-wrapper .versions-container .versions-node,
+.icon-wrapper .versions-container .versions-branch-shadow {
+    opacity: 0.5;
+    transition: opacity var(--transition-slow);
+}
+
+.icon-wrapper .versions-container .versions-branch {
+    stroke-dasharray: 25;
+    stroke-dashoffset: 25;
+    transition: stroke-dashoffset var(--transition-slow);
+}
+
+.nav-link:hover .icon-wrapper .versions-node {
+    opacity: 1;
+}
+
+.nav-link:hover .icon-wrapper .versions-branch {
+    stroke-dashoffset: 0;
+}
+
+/* ==================== Database ==================== */
+.icon-wrapper .database-container .data-top,
+.icon-wrapper .database-container .data-middle,
+.icon-wrapper .database-container .data-bottom {
+    transform-origin: 12px 12px;
+    transition: transform var(--transition-slow), d var(--transition-slow);
+}
+
+.nav-link:hover .icon-wrapper .data-top {
+    transform: translateY(-2px);
+}
+
+.nav-link:hover .icon-wrapper .data-middle {
+    d: path("M20 10V12C20 14.2091 16.4183 16 12 16C7.58172 16 4 14.2091 4 12V10");
+}
+
+.nav-link:hover .icon-wrapper .data-bottom {
+    transform: translateY(2px);
+    d: path("M4 15V17C4 19.2091 7.58172 21 12 21C16.4183 21 20 19.2091 20 17V15");
+}
+
+/* ==================== Tasks ==================== */
+.icon-wrapper .tasks-container .tasks-bullet-top,
+.icon-wrapper .tasks-container .tasks-line-top,
+.icon-wrapper .tasks-container .tasks-bullet-bottom-dot,
+.icon-wrapper .tasks-container .tasks-bullet-bottom-cross,
+.icon-wrapper .tasks-container .tasks-line-bottom-top,
+.icon-wrapper .tasks-container .tasks-line-bottom-bottom {
+    transition: d var(--transition-slow);
+}
+
+.nav-link:hover .icon-wrapper .tasks-bullet-top {
+    d: path("M8 11A1 1 0 018 7 1 1 0 018 11");
+}
+
+.nav-link:hover .icon-wrapper .tasks-line-top {
+    d: path("M13 9H18");
+}
+
+.nav-link:hover .icon-wrapper .tasks-bullet-bottom-dot {
+    d: path("M8 15A1 1 0 018 15 1 1 0 018 15");
+}
+
+.nav-link:hover .icon-wrapper .tasks-bullet-bottom-cross {
+    d: path("M6 13 10 17M10 13 6 17");
+}
+
+.nav-link:hover .icon-wrapper .tasks-line-bottom-top {
+    d: path("M13 13.5H18");
+}
+
+.nav-link:hover .icon-wrapper .tasks-line-bottom-bottom {
+    d: path("M13 16.5H18");
+}
+
+/* ==================== Stop-words ==================== */
+.nav-link .icon-wrapper .banned-container > * {
+    transition: stroke 0s ease;
+}
+
+.nav-link:hover .icon-wrapper .banned-container > * {
+    transition-duration: 0.3s !important;
+    stroke: var(--error-color);
+}
+
+.icon-wrapper:hover .banned-container > * {
+    stroke: var(--error-hover) !important;
+}
+
+/* ==================== LLM ==================== */
+.icon-wrapper .llm-container > * {
+    transition: transform var(--transition-slow), d var(--transition-slow);
+}
+
+.icon-wrapper .llm-container .llm-line {
+    stroke-width: var(--width-s);
+}
+
+.nav-link:hover .icon-wrapper .llm-node-left-top {
+    transform: translate(-1px, -0.5px);
+}
+
+.nav-link:hover .icon-wrapper .llm-node-left-bottom {
+    transform: translate(-1px, 0.5px);
+}
+
+.nav-link:hover .icon-wrapper .llm-node-right-top {
+    transform: translate(1px, -1px);
+}
+
+.nav-link:hover .icon-wrapper .llm-node-right-middle {
+    transform: translate(1px, 0);
+}
+
+.nav-link:hover .icon-wrapper .llm-node-right-bottom {
+    transform: translate(1px, 1px);
+}
+
+.nav-link:hover .icon-wrapper .llm-line-lt-rt {
+    d: path("M7.5 6.5 16.5 5");
+}
+
+.nav-link:hover .icon-wrapper .llm-line-lt-rm {
+    d: path("M7.5 8 16.5 11");
+}
+
+.nav-link:hover .icon-wrapper .llm-line-lt-rb {
+    d: path("M7 9 17.5 17");
+}
+
+.nav-link:hover .icon-wrapper .llm-line-lb-rt {
+    d: path("M7 15 17.5 7");
+}
+
+.nav-link:hover .icon-wrapper .llm-line-lb-rm {
+    d: path("M7.5 16 16.5 13");
+}
+
+.nav-link:hover .icon-wrapper .llm-line-lb-rb {
+    d: path("M7.5 17.5 16.5 19");
+}
+
+/* ==================== Trash Bin ==================== */
+.trash-bin-container {
+    stroke: var(--error-color);
+}
+
+.trash-bin-container.right {
+    transform: scaleX(-1);
+}
+
+.icon-wrapper .trash-bin-lid {
+    transform-origin: 17px 7px;
+    transform-box: fill-box;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-wrapper .trash-bin-body {
+    transform-origin: 10px top;
+    transform-box: fill-box;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-wrapper:hover .trash-bin-container {
+    stroke: var(--error-hover);
+}
+
+.icon-wrapper:hover .trash-bin-container .trash-bin-lid {
+    transform: rotate(20deg);
+}
+
+.icon-wrapper:hover .trash-bin-container .trash-bin-body {
+    transform: rotate(-5deg) translate(-1px, 2px);
+}
+
+/* ==================== Floppy Disk ==================== */
+.icon-wrapper:hover .floppy-disk-container .floppy-disk-slider {
+    transform: translateX(2px);
+    fill: var(--primary-hover);
+}
+
+.icon-wrapper .floppy-disk-slider {
+    transition: all 0.3s ease;
+}
+
+/* ==================== Arrow ==================== */
+.icon-wrapper .arrow-container.up {
+    transform: rotate(0deg);
+}
+
+.icon-wrapper .arrow-container.right {
+    transform: rotate(90deg);
+}
+
+.icon-wrapper .arrow-container.down {
+    transform: rotate(-180deg);
+}
+
+.icon-wrapper .arrow-container.left {
+    transform: rotate(-90deg);
+}
+
+.icon-wrapper:hover .arrow-container {
+    
+    transform-box: fill-box;
+}
+
+.icon-wrapper:hover .arrow-container .arrow-body {
+    --scale-val: 0.75;
+    animation: arrow-shrink 0.4s cubic-bezier(0.4, 0, 0.4, 1);
+}
+
+.icon-wrapper:hover .arrow-container .arrow-line {
+    --translate-val: 100%;
+    animation: arrow-line-join 0.4s cubic-bezier(0.4, 0, 0.4, 1);
+}
+
+@keyframes arrow-shrink {
+    from, to {
+        transform: scale(1);
+    }
+
+    40%, 80% {
+        transform: scaleY(var(--scale-val, 1));
+    }
+}
+
+@keyframes arrow-line-join {
+    from {
+        transform: translateY(var(--translate-val, 0));
+    }
+
+    75%, to {
+        transform: translate(0);
+    }
+}
+
+/* ==================== Pin ==================== */
+.icon-wrapper:hover .pin-container.pin {
+    
+    transform-origin: 3px 21px;
+    transform-box: fill-box;
+    animation: pin-shot 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-wrapper .pin-container.unpin {
+    stroke: var(--warning-color);
+}
+
+.icon-wrapper:hover .pin-container.unpin {
+    stroke: var(--warning-hover);
+}
+
+.icon-wrapper:hover .pin-container.unpin > .pin-not {
+    stroke-dasharray: 35 35;
+    stroke-dashoffset: 0;
+    animation: unpin-draw 0.5s ease-out;
+}
+
+@keyframes pin-shot {
+    from, to {
+        transform: translate(0, 0) scale(1) skew(0deg, 0deg);
+    }
+
+    80% {
+        transform: translate(12px, -12px) scale(0.85, 0.95) skew(-5deg, -5deg);
+    }
+
+    90% {
+        transform: translate(-1px, 1px) scale(1.05, 0.95) skew(2deg, 2deg);
+    }
+}
+
+@keyframes unpin-draw {
+    to {
+        stroke-dashoffset: -60;
+    }
+}
+
+/* ==================== Tick ==================== */
+.icon-wrapper .tick-container {
+    stroke: var(--success-color);
+}
+
+.icon-wrapper:hover .tick-container {
+    stroke: var(--success-hover);
+    stroke-dasharray: 75 25;
+    stroke-dashoffset: 0;
+    animation: tick-draw 0.7s ease-out;
+}
+
+@keyframes tick-draw {
+    to {
+        stroke-dashoffset: 100;
+    }
+}
+
+/* ==================== Cross ==================== */
+.icon-wrapper .cross-container {
+    stroke: var(--error-color);
+}
+
+.icon-wrapper:hover .cross-container {
+    stroke: var(--error-hover);
+    stroke-dasharray: 100 25;
+    stroke-dashoffset: 0;
+    animation: cross-draw 0.8s ease-out;
+}
+
+@keyframes cross-draw {
+    to {
+        stroke-dashoffset: -125;
+    }
+}
+
+/* ==================== Question ==================== */
+.icon-wrapper .question-container {
+    stroke: var(--secondary-color);
+}
+
+.icon-wrapper:hover .question-container {
+    stroke: var(--secondary-hover);
+    transform-origin: center bottom;
+    transform-box: fill-box;
+    animation: question-shot 0.5s ease-out;
+}
+
+@keyframes question-shot {
+    from, to {
+        transform: scaleY(1);
+    }
+
+    50% {
+        transform: scaleY(0.8);
+    }
+
+    80% {
+        transform: scaleY(1.05);
+    }
+}
+
+/* ==================== Pencil ==================== */
+.icon-wrapper .pencil-container {
+    stroke: var(--secondary-color);
+}
+
+.icon-wrapper:hover .pencil-container {
+    stroke: var(--secondary-hover);
+}
+
+.icon-wrapper:hover .pencil-container .pencil-ready {
+    transform-origin: 60%;
+    transform-box: fill-box;
+    animation: pencil-ready 0.5s cubic-bezier(0.46, 0.03, 0.49, 0.97);
+}
+
+.icon-wrapper:hover .pencil-container .pencil-paper {
+    stroke-dasharray: 25 25;
+    stroke-dashoffset: 0;
+    animation: paper-draw 0.5s ease-in-out;
+}
+
+@keyframes pencil-ready {
+    from, to {
+        transform: translateY(0) rotate(0);
+    }
+
+    25%, 50% {
+        transform: translateY(-2px) rotate(30deg);
+    }
+
+    70% {
+        transform: translateY(-2px) rotate(32deg);
+    }
+
+    76% {
+        transform: translateY(-2px) rotate(24deg);
+    }
+
+    82% {
+        transform: translateY(-1.5px) rotate(16deg);
+    }
+
+    88% {
+        transform: translateY(-1px) rotate(8deg);
+    }
+
+    94% {
+        transform: translateY(-0.5px) rotate(0);
+    }
+}
+
+@keyframes paper-draw {
+    to {
+        stroke-dashoffset: -50;
+    }
+}
+
+/* ==================== Reset ==================== */
+.icon-wrapper .reset-container {
+    stroke: var(--secondary-color);
+}
+
+.icon-wrapper:hover .reset-container {
+    stroke: var(--secondary-hover);
+    transform-origin: center;
+    transform-box: fill-box;
+    animation: reset-rotate 0.3s ease-in-out forwards;
+}
+
+@keyframes reset-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+/* ==================== Link Arrow ==================== */
+.icon-wrapper:hover .link-arrow-container {
+    
+    /* transform-origin: 3px 21px; */
+    transform-origin: right bottom;
+    transform-box: fill-box;
+    animation: link-arrow-shot 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes link-arrow-shot {
+    from, to {
+        transform: translate(0) scale(1) skew(0deg);
+    }
+
+    80% {
+        transform: translate(6px, -6px) scale(0.85) skew(-5deg);
+    }
+
+    90% {
+        transform: translate(-1px, 1px) scale(1.05) skew(2deg);
+    }
+}
+
+/* ==================== Menu ==================== */
+.icon-wrapper.header-menu {
+    height: 75%;
+}
+
+.icon-wrapper .menu-line-container > * {
+    transition: height var(--transition-slow), transform var(--transition-slow);
+}
+
+.icon-wrapper:hover .menu-line-container .menu-line-top {
+    transform: translateX(3px);
+}
+
+.icon-wrapper:hover .menu-line-container .menu-line-middle {
+    transform: translateX(2px);
+}
+
+.icon-wrapper:hover .menu-line-container .menu-line-bottom {
+    transform: translateX(1px);
+}
+
+/* ==================== Syn ==================== */
+.icon-wrapper:hover .syn-container.do > * {
+    transform-origin: center bottom;
+    transform-box: fill-box;
+    animation: letter-bounce 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.icon-wrapper:hover .syn-container.do .syn-y {
+  animation-delay: 0.1s;
+}
+
+.icon-wrapper:hover .syn-container.do .syn-n {
+  animation-delay: 0.2s;
+}
+
+@keyframes letter-bounce {
+    from {
+        transform: translateY(0) scaleY(1);
+    }
+    40% {
+        transform: translateY(-2px) scaleY(1.15);
+    }
+    80% {
+        transform: translateY(1px) scaleY(0.95);
+    }
+    to {
+        transform: translateY(0) scaleY(1);
+    }
+}
+
+.icon-wrapper .syn-container.undo {
+    stroke: var(--warning-color);
+}
+
+.icon-wrapper:hover .syn-container.undo {
+    stroke: var(--warning-hover);
+}
+
+.icon-wrapper:hover .syn-container.undo > .syn-not {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 0;
+    animation: undo-draw 0.5s ease-out;
+}
+
+@keyframes undo-draw {
+    to {
+        stroke-dashoffset: -100;
+    }
+}
